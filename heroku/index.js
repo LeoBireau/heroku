@@ -13,7 +13,7 @@ app.get('/', function (req, res) {
 
 	axios
       .get('https://dephero-b04e.restdb.io/rest/utilisateur', {headers: config})
-      .then(response => (res.send(response));
+      .then(response => (res.send(response)));
 
 })
 
