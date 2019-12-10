@@ -6,13 +6,15 @@ const request = require("request");
 app.get('/', function (req, res) {
 
 	let config = {
+		'headers': {
 		'cache-control': 'no-cache',
 	    'x-apikey': '4ee56fd28c586c7ce5e76b325264f34283e6a',
 	    'content-type': 'application/json' 
+	    }
 	};
 
 	axios
-      .get('https://dephero-b04e.restdb.io/rest/utilisateur', {headers: config})
+      .get('https://dephero-b04e.restdb.io/rest/utilisateur', { config: this.config } )
       .then(response => (res.send(response)));
 
 })
