@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 5000 // this is very important
 const request = require("request");
+const axios = require("axios");
 
 app.get('/', function (req, res) {
 
@@ -13,8 +14,7 @@ app.get('/', function (req, res) {
 	    }
 	};
 
-	axios
-      .get('https://dephero-b04e.restdb.io/rest/utilisateur', { config: configuration } )
+	axios.get('https://dephero-b04e.restdb.io/rest/utilisateur', { config: configuration } )
       .then(response => (res.send(response)));
 
 })
