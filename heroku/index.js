@@ -1,8 +1,7 @@
-
-const request = require("request");
+var request = require("request");
 
 var options = { method: 'GET',
-  url: 'https://dephero-b04e.restdb.io/rest/users',
+  url: 'https://dephero-b04e.restdb.io/rest/utilisateur',
   headers: 
    { 'cache-control': 'no-cache',
      'x-apikey': '4ee56fd28c586c7ce5e76b325264f34283e6a' } };
