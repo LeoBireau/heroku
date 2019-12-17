@@ -43,16 +43,6 @@ app.get('/pw', function (req, res) {
     });
 })
 
-function test(password) {
-    let t = bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
-               return hash;
-        });
-    });
-
-    return t;
-}
-
 //Partie Utilisateur ***************************************************************************
 
 app.get('/getAllUsers', function (req, res) {
@@ -86,7 +76,7 @@ app.post("/addUser",urlEncodedParser, function (req, res) {
 //Partie Articles *************************************************************************
 
 //Testé et Approuvé
-app.get('/getAllAticles', function (req, res) {
+app.get('/getAllArticles', function (req, res) {
     axios.get('https://dephero-b04e.restdb.io/rest/articles', { headers: configuration } )
       .then(response => (res.send(response.data))).catch(console.log)
 })
@@ -106,7 +96,7 @@ app.post("/addArticle",urlEncodedParser, function (req, res) {
         "data": { 
             "titre": req.body.titre,
             "contenu": req.body.contenu,
-            "auteur": '5df8db1291eb7c5a0001196b'
+            "auteur": '5df8db1291eb7c5a0001196b' //test
         },
           "responseType": 'json'
     }).then(response => {
@@ -117,16 +107,18 @@ app.post("/addArticle",urlEncodedParser, function (req, res) {
 })
 
 //Testé et Approuvé
-app.get("/editArticle/:idarticle", function (req, res) {
-    
+app.post("/editArticle",urlEncodedParser, function (req, res) {
+    //check jwt;
+    //récupérer id auteur
+    //comparer id Auteur avec celui du JWT
     axios({
         "method": "PUT",
-        "url": "https://dephero-b04e.restdb.io/rest/articles/"+req.params.idarticle,
+        "url": "https://dephero-b04e.restdb.io/rest/articles/"+req.body.identifiant,
         "headers": configuration,
         "data": { 
-            "titre": 'holla',
-            "contenu": 'holla Kurenai',
-            "auteur": 'holla'
+            "titre": req.body.titre, //test
+            "contenu": req.body.contenu, //test
+            "auteur": 'holla' //test
         },
           "responseType": 'json'
     }).then(response => {
@@ -138,7 +130,7 @@ app.get("/editArticle/:idarticle", function (req, res) {
 
 //Testé et Approuvé
 app.get("/dropArticle/:idarticle", function (req, res) {
-    console.log(req);
+    
     axios({
         "method": "DELETE",
         "url": "https://dephero-b04e.restdb.io/rest/articles/"+req.params.idarticle,
@@ -156,9 +148,14 @@ app.get("/createArticle", function (req, res) {
     res.sendFile(__dirname+"/ressources/formArticle.html");
 })
 
+app.get("/updateArticle", function (req, res) {
+    res.sendFile(__dirname+"/ressources/formUpdateArticle.html");
+})
+
 app.get("/createUser", function (req, res) {
     res.sendFile(__dirname+"/ressources/formCreateAccount.html");
 })
+
 
 
 //Partie écouteur
