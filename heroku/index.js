@@ -7,6 +7,8 @@ const passportJWT = require('passport-jwt')
 const bcrypt = require('bcrypt')
 const app = express()
 const PORT = process.env.PORT || 5000 // this is very important
+const bodyParser = require('body-parser')
+const urlEncodedParser = bodyParser.urlencoded({ extended: false })
 
 const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
@@ -41,6 +43,16 @@ app.get('/pw', function (req, res) {
     });
 })
 
+function test(password) {
+    let t = bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+               return hash;
+        });
+    });
+
+    return t;
+}
+
 //Partie Utilisateur ***************************************************************************
 
 app.get('/getAllUsers', function (req, res) {
@@ -48,16 +60,20 @@ app.get('/getAllUsers', function (req, res) {
       .then(response => (res.send(response.data))).catch(console.log)
 })
 
-app.get("/addUsers", function (req, res) {
+app.post("/addUser",urlEncodedParser, function (req, res) {
+
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(req.body.password, salt);
+
     axios({
         "method": "POST",
         "url": "https://dephero-b04e.restdb.io/rest/utilisateur",
         "headers": configuration,
         "data": { 
-            "nomUser": 'xyz',
-            "prenomUser": 'abc',
-            "emailUser": 'lemoinelucas1@gmail.com',
-            "passwordUser": 'abc'
+            "nomUser": req.body.nom,
+            "prenomUser": req.body.prenom,
+            "emailUser": req.body.email,
+            "passwordUser": hash
         },
           "responseType": 'json'
     }).then(response => {
@@ -82,14 +98,14 @@ app.get('/getArticleById/:idarticle', function (req, res) {
 })
 
 //Testé et Approuvé
-app.get("/addArticle", function (req, res) {
+app.post("/addArticle",urlEncodedParser, function (req, res) {
     axios({
         "method": "POST",
         "url": "https://dephero-b04e.restdb.io/rest/articles",
         "headers": configuration,
         "data": { 
-            "titre": 'Konosuba',
-            "contenu": 'Konosuba Kurenai',
+            "titre": req.body.titre,
+            "contenu": req.body.contenu,
             "auteur": '5df8db1291eb7c5a0001196b'
         },
           "responseType": 'json'
@@ -102,7 +118,7 @@ app.get("/addArticle", function (req, res) {
 
 //Testé et Approuvé
 app.get("/editArticle/:idarticle", function (req, res) {
-    console.log(req);
+    
     axios({
         "method": "PUT",
         "url": "https://dephero-b04e.restdb.io/rest/articles/"+req.params.idarticle,
@@ -138,6 +154,10 @@ app.get("/dropArticle/:idarticle", function (req, res) {
 
 app.get("/createArticle", function (req, res) {
     res.sendFile(__dirname+"/ressources/formArticle.html");
+})
+
+app.get("/createUser", function (req, res) {
+    res.sendFile(__dirname+"/ressources/formCreateAccount.html");
 })
 
 
