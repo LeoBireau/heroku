@@ -130,7 +130,6 @@ app.post("/editArticle",urlEncodedParser, function (req, res) {
 
 //Testé et Approuvé
 app.get("/dropArticle/:idarticle", function (req, res) {
-    
     axios({
         "method": "DELETE",
         "url": "https://dephero-b04e.restdb.io/rest/articles/"+req.params.idarticle,
@@ -149,7 +148,7 @@ app.get("/createArticle", function (req, res) {
 })
 
 app.get("/updateArticle", function (req, res) {
-    res.sendFile(__dirname+"/ressources/formUpdateArticle.html");
+    res.sendFile(__dirname+"/ressources/formUpdateArticle.html", {name:"azerty123"});
 })
 
 app.get("/createUser", function (req, res) {
