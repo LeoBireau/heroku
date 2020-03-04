@@ -5,6 +5,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const passportJWT = require('passport-jwt')
+const PORT = process.env.PORT
 const secret = 'thisismysecret'
 const urlEncodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -153,6 +154,6 @@ app.get("/createUser", function (req, res) {
     res.sendFile(__dirname+"/ressources/formCreateAccount.html");
 })
 
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log('app running on port 5000')
 })
