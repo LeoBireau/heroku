@@ -5,11 +5,12 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const passportJWT = require('passport-jwt')
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 const secret = 'thisismysecret'
-const urlEncodedParser = bodyParser.urlencoded({ extended: false })
+const urlEncodedParser = bodyParser.urlencoded({ extended: true })
 
 const app = express()
+app.use(bodyParser.json());
 
 const users = [{ email: 'pcavalet@kaliop.com', password: 'kaliop' }]
 
@@ -72,6 +73,41 @@ app.post('/login', urlEncodedParser, (req, res) => {
   const userJwt = jwt.sign({ user: user.email }, secret)
 
   res.json({user, userJwt })
+})
+
+function crypter(text){
+  const hash = bcrypt.hashSync(text, 10);
+  return hash
+}
+function comparerCrypt(pwd, hash){
+  let bool = bcrypt.compareSync(pwd, hash);
+  return bool
+}
+
+
+app.post("/addUser",urlEncodedParser, function (req, res) {
+
+    let password = req.body.password
+    let pwHasher = crypter(password)
+    console.log(req.body)
+    
+
+    axios({
+        "method": "POST",
+        "url": "https://dephero-b04e.restdb.io/rest/utilisateur",
+        "headers": configuration,
+        "data": { 
+            "nomUser": req.body.nom,
+            "prenomUser": req.body.prenom,
+            "emailUser": req.body.email,
+            "passwordUser": pwHasher
+        },
+          "responseType": 'json'
+    }).then(response => {
+        res.send(response.data);
+    }).catch(error => {
+        res.send(error);
+    })
 })
 
 //Testé et Approuvé
